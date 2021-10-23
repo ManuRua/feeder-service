@@ -1,7 +1,9 @@
 package server
 
 import (
+	"bufio"
 	"fmt"
+	"log"
 	"net"
 )
 
@@ -18,5 +20,14 @@ func NewHandler() Handler {
 }
 
 func (h *handler) Handle(c net.Conn) {
-	fmt.Println("Client " + c.RemoteAddr().String() + " connected")
+	buffer, err := bufio.NewReader(c).ReadBytes('\n')
+    if err != nil {
+        fmt.Println("Client left.")
+        c.Close()
+        return
+    }
+
+    log.Println("Client message:", string(buffer[:len(buffer)-1]))
+
+    h.Handle(c)
 }
