@@ -1,0 +1,33 @@
+version: "3.7"
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: ./docker/files/${FILE}-api.Dockerfile
+    container_name: "feeder-service-api"
+    security_opt:
+      - "seccomp:unconfined"
+    volumes:
+      - ..:/go/src/feeder-service
+    ports:
+      - 4000:4000
+      - 40000:40000
+    environment:
+      - APP_ENV=${APP_ENV}
+      - FILE=${FILE}
+    depends_on:
+      - db
+  db:
+    image: postgres
+    restart: unless-stopped
+    container_name: "feeder-service-db"
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: deporvillage
+      POSTGRES_USER: deporvillage
+      POSTGRES_PASSWORD: deporvillage
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+volumes:
+  postgres-volume:
