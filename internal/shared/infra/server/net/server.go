@@ -44,8 +44,8 @@ func (s *server) Run() error {
 			fmt.Println("Error connecting:", err.Error())
 			return err
 		}
-		fmt.Println("Client connected")
+		fmt.Println("Client " + c.RemoteAddr().String() + " connected")
 
-		s.handler.Handle(c)
+		go s.handler.Handle(c)
     }
 }
