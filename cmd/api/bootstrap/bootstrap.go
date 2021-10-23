@@ -1,7 +1,12 @@
 package bootstrap
 
+import (
+	"feeder-service/internal/shared/domain/config"
+	server "feeder-service/internal/shared/infra/server/net"
+)
+
 const (
-	host = "localhost"
+	network = "tcp"
 	port = 4000
 
 	dbUser = "deporvillage"
@@ -12,5 +17,11 @@ const (
 )
 
 func Run() error {
-	return nil
+	serverConfig := config.ServerConfig{
+		Network: network,
+		Port: port,
+	}
+
+	srv := server.New(serverConfig)
+	return srv.Run()
 }
