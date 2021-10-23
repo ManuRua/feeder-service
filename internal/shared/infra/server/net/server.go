@@ -8,20 +8,27 @@ import (
 	"strconv"
 )
 
-type Server struct {
+type server struct {
 	config config.ServerConfig
+	handler Handler
 }
 
-func New(serverConfig config.ServerConfig) Server {
-	srv := Server{
+type Server interface{
+	Run() error
+}
+
+func New(serverConfig config.ServerConfig, handler Handler) Server {
+	srv := &server{
 		config: serverConfig,
+		handler: handler,
 	}
 
 	return srv
 }
 
-func (s *Server) Run() error {
+func (s *server) Run() error {
 	portStr := strconv.Itoa(s.config.Port)
+
 	l, err := net.Listen(s.config.Network, ":"+portStr)
 	if err != nil {
 		fmt.Println(err)
@@ -32,5 +39,13 @@ func (s *Server) Run() error {
 	log.Println("Server running on port", portStr)
 
 	for {
+		c, err := l.Accept()
+		if err != nil {
+			fmt.Println("Error connecting:", err.Error())
+			return err
+		}
+		fmt.Println("Client connected")
+
+		s.handler.Handle(c)
     }
 }
