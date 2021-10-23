@@ -1,0 +1,13 @@
+version: "3.3"
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: ./docker/files/prod-api.Dockerfile
+    container_name: "feeder-service-api"
+    ports:
+      - 4000:4000
+    environment:
+      - APP_ENV=production
+    depends_on:
+      - db-postgres
