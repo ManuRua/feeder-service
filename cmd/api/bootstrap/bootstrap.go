@@ -22,6 +22,8 @@ func Run() error {
 		Port: port,
 	}
 
-	srv := server.New(serverConfig)
+	handler := server.NewHandler()
+
+	srv := server.New(serverConfig, handler)
 	return srv.Run()
 }
