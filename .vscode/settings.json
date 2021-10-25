@@ -1,10 +1,12 @@
 {
     "go.formatTool": "goimports",
     "go.lintTool": "golangci-lint",
+    "go.lintOnSave": "file",
     "go.lintFlags": [
         "--fast"
     ],
     "todohighlight.include": [
         "**/*.go"
-    ]
+    ],
+    "editor.defaultFormatter": "golang.go",
 }

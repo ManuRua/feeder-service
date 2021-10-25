@@ -9,6 +9,6 @@ RUN go get -u github.com/go-delve/delve/cmd/dlv
 # copying all from context .. to /go/src/feeder-service
 COPY . .
 
-RUN go mod download 
+RUN go mod download
 
 ENTRYPOINT dlv debug ./cmd --listen=:40000 --headless=true --api-version=2

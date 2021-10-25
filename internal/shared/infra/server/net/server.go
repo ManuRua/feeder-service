@@ -9,17 +9,17 @@ import (
 )
 
 type server struct {
-	config config.ServerConfig
+	config  config.ServerConfig
 	handler Handler
 }
 
-type Server interface{
+type Server interface {
 	Run() error
 }
 
 func New(serverConfig config.ServerConfig, handler Handler) Server {
 	srv := &server{
-		config: serverConfig,
+		config:  serverConfig,
 		handler: handler,
 	}
 
@@ -61,5 +61,5 @@ func (s *server) Run() error {
 
 			id++
 		}
-    }
+	}
 }

@@ -7,8 +7,8 @@ import (
 
 const (
 	network = "tcp"
-	port = 4000
-	limit = 5
+	port    = 4000
+	limit   = 5
 
 	dbUser = "deporvillage"
 	dbPass = "deporvillage"
@@ -19,8 +19,8 @@ const (
 
 func Run() error {
 	serverConfig := config.ServerConfig{
-		Network: network,
-		Port: port,
+		Network:   network,
+		Port:      port,
 		ConnLimit: limit,
 	}
 

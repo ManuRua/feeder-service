@@ -7,7 +7,7 @@ WORKDIR /go/src/feeder-service
 # copying all from context .. to /go/src/feeder-service
 COPY . .
 
-RUN go mod download 
+RUN go mod download
 RUN go get -u github.com/cosmtrek/air
 
 ENTRYPOINT air -d
