@@ -38,14 +38,28 @@ func (s *server) Run() error {
 
 	log.Println("Server running on port", portStr)
 
+	sem := make(chan int, s.config.ConnLimit)
+	id := 1
+
 	for {
 		c, err := l.Accept()
 		if err != nil {
 			fmt.Println("Error connecting:", err.Error())
 			return err
 		}
-		fmt.Println("Client " + c.RemoteAddr().String() + " connected")
+		if id > s.config.ConnLimit {
+			_, err = c.Write([]byte("There are already 5 clients connected."))
+			if err != nil {
+				fmt.Println("Error writting:", err.Error())
+			}
+			c.Close()
+		} else {
+			sem <- id
 
-		go s.handler.Handle(c)
+			fmt.Println("Client " + c.RemoteAddr().String() + " connected")
+			go s.handler.Handle(c, sem, &id)
+
+			id++
+		}
     }
 }

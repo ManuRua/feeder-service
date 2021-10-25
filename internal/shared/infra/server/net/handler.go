@@ -10,7 +10,7 @@ import (
 type handler struct {}
 
 type Handler interface {
-	Handle(c net.Conn)
+	Handle(c net.Conn, sem chan int, id *int)
 }
 
 func NewHandler() Handler {
@@ -19,15 +19,17 @@ func NewHandler() Handler {
 	return handler
 }
 
-func (h *handler) Handle(c net.Conn) {
+func (h *handler) Handle(c net.Conn, sem chan int, id *int) {
 	buffer, err := bufio.NewReader(c).ReadBytes('\n')
     if err != nil {
         fmt.Println("Client left.")
         c.Close()
+		<-sem
+		(*id)--
         return
     }
 
     log.Println("Client message:", string(buffer[:len(buffer)-1]))
 
-    h.Handle(c)
+    h.Handle(c, sem, id)
 }
