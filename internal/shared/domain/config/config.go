@@ -9,8 +9,8 @@ type Config struct {
 
 // ServerConfig exported
 type ServerConfig struct {
-	Network string
-	Port int
+	Network   string
+	Port      int
 	ConnLimit int
 }
 
