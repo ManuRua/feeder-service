@@ -3,7 +3,7 @@ package products
 import "testing"
 
 func TestNewProduct(t *testing.T) {
-	sku := "KASL-3423"
+	sku := SKU("KASL-3423")
 	expected := Product{
 		sku: sku,
 	}

@@ -3,16 +3,16 @@ package products
 import "fmt"
 
 type Product struct {
-	sku string
+	sku SKU
 }
 
-func NewProduct(sku string) Product {
+func NewProduct(sku SKU) Product {
 	return Product{
 		sku: sku,
 	}
 }
 
-func (p Product) SKU() string {
+func (p Product) SKU() SKU {
 	return p.sku
 }
 
