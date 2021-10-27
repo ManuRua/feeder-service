@@ -20,7 +20,7 @@ func NewProductRepository() products.ProductRepository {
 	return &productRepository{}
 }
 
-func (r *productRepository) Create(product *products.Product) error {
+func (r *productRepository) Save(product *products.Product) error {
 	f, err := os.OpenFile(fsProductFilename, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
 	if err != nil {
 		return fmt.Errorf("%w: %v", ErrCreateProduct, err)
