@@ -4,24 +4,30 @@ import (
 	"regexp"
 )
 
-type SKU string
+type ProductSKU struct {
+	value string
+}
 
 var rxPat = regexp.MustCompile(`^[A-Z]{4}-[0-9]{4}$`)
 
-func NewSKU(sku string) (*SKU, error) {
-	err := ensureIsValidSKU(sku)
+func NewProductSKU(value string) (ProductSKU, error) {
+	err := ensureIsValidProductSKU(value)
 	if err != nil {
-		return nil, err
+		return ProductSKU{}, err
 	}
 
-	skuVO := SKU(sku)
-
-	return &skuVO, nil
+	return ProductSKU{
+		value: value,
+	}, nil
 }
 
-func ensureIsValidSKU(sku string) error {
-	if !rxPat.MatchString(sku) {
-		return NewNotValidSKUError()
+func (sku ProductSKU) String() string {
+	return sku.value
+}
+
+func ensureIsValidProductSKU(value string) error {
+	if !rxPat.MatchString(value) {
+		return NewErrInvalidProductSKU(value)
 	} else {
 		return nil
 	}

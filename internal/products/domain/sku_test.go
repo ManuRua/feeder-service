@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-var newSKUTests = []struct {
+var newProductSKUTests = []struct {
 	sku  string
 	pass bool
 }{
@@ -15,20 +15,22 @@ var newSKUTests = []struct {
 	{"1234-ABCD", false},
 }
 
-func TestNewSKU(t *testing.T) {
-	for _, tt := range newSKUTests {
+func TestNewProductSKU(t *testing.T) {
+	for _, tt := range newProductSKUTests {
 		t.Run(tt.sku, func(t *testing.T) {
-			expected := SKU(tt.sku)
+			expected := ProductSKU{
+				value: tt.sku,
+			}
 
-			sku, err := NewSKU(tt.sku)
-			if sku != nil && *sku != expected {
-				t.Errorf("Expected: %v, got: %v", expected, *sku)
+			sku, err := NewProductSKU(tt.sku)
+			if err == nil && sku != expected {
+				t.Errorf("Expected: %v, got: %v", expected, sku)
 			}
 
 			if tt.pass && err != nil {
 				t.Errorf("Pass: %t, got: %v", tt.pass, err)
 			}
-			if !tt.pass && !IsNotValidSKUError(err) {
+			if !tt.pass && !IsErrInvalidProductSKU(err) {
 				t.Errorf("Pass: %t, got: %v", tt.pass, err)
 			}
 		})
