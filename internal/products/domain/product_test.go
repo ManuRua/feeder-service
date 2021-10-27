@@ -1,15 +1,19 @@
 package products
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestNewProduct(t *testing.T) {
-	sku := SKU("KASL-3423")
+	sku := ProductSKU{
+		value: "KASL-3423",
+	}
 	expected := Product{
 		sku: sku,
 	}
 
-	product := NewProduct(sku)
-	if product != expected {
+	product, err := NewProduct(sku.value)
+	if err != nil || product != expected {
 		t.Errorf("Expected: %v, got: %v", expected, product)
 	}
 

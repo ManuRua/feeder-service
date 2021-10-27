@@ -1,17 +1,22 @@
 package products
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
-type notValidSKUError struct {
+var ErrInvalidProductSKU = errors.New("Invalid Product SKU")
+
+type errInvalidProductSKU struct {
 	error
 }
 
-func NewNotValidSKUError() error {
-	return &notValidSKUError{errors.New("SKU has invalid format.")}
+func NewErrInvalidProductSKU(value string) error {
+	return &errInvalidProductSKU{fmt.Errorf("%w: %s", ErrInvalidProductSKU, value)}
 }
 
-func IsNotValidSKUError(err error) bool {
-	return errors.Is(err, notValidSKUError{})
+func IsErrInvalidProductSKU(err error) bool {
+	return errors.Is(err, errInvalidProductSKU{})
 }
 
-func (e notValidSKUError) Is(target error) bool { return target == notValidSKUError{} }
+func (e errInvalidProductSKU) Is(target error) bool { return target == errInvalidProductSKU{} }
