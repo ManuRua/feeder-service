@@ -1,6 +1,7 @@
 package server
 
 import (
+	"feeder-service/internal/products/infra/server/handler"
 	"feeder-service/internal/shared/domain/config"
 	"fmt"
 	"log"
@@ -10,14 +11,14 @@ import (
 
 type server struct {
 	config  config.ServerConfig
-	handler Handler
+	handler handler.Handler
 }
 
 type Server interface {
 	Run() error
 }
 
-func New(serverConfig config.ServerConfig, handler Handler) Server {
+func New(serverConfig config.ServerConfig, handler handler.Handler) Server {
 	srv := &server{
 		config:  serverConfig,
 		handler: handler,

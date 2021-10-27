@@ -1,6 +1,9 @@
 package bootstrap
 
 import (
+	"feeder-service/internal/products/application/create"
+	"feeder-service/internal/products/infra/server/handler"
+	"feeder-service/internal/products/infra/storage/fs"
 	"feeder-service/internal/shared/domain/config"
 	server "feeder-service/internal/shared/infra/server/net"
 )
@@ -24,7 +27,9 @@ func Run() error {
 		ConnLimit: limit,
 	}
 
-	handler := server.NewHandler()
+	repository := fs.NewProductRepository()
+	createUC := create.NewCreateProductUseCase(repository)
+	handler := handler.NewCreateHandler(createUC)
 
 	srv := server.New(serverConfig, handler)
 	return srv.Run()
