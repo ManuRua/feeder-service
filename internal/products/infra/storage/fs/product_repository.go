@@ -16,10 +16,12 @@ var ErrCreateProduct = errors.New("Error trying to persist product on log file")
 type productRepository struct {
 }
 
+// NewProductRepository init a new filesystem product repository.
 func NewProductRepository() products.ProductRepository {
 	return &productRepository{}
 }
 
+// Save add entry to log file of products.
 func (r *productRepository) Save(product *products.Product) error {
 	f, err := os.OpenFile(fsProductFilename, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
 	if err != nil {
