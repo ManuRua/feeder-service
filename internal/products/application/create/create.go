@@ -1,14 +1,21 @@
 package create
 
-import products "feeder-service/internal/products/domain"
+import (
+	products "feeder-service/internal/products/domain"
+)
 
 type CreateProductUseCase struct {
-	productRepository products.ProductRepository
+	persistProductRepository products.ProductRepository
+	tempProductRepository    products.ProductRepository
 }
 
-func NewCreateProductUseCase(productRepository products.ProductRepository) CreateProductUseCase {
+func NewCreateProductUseCase(
+	persistProductRepository products.ProductRepository,
+	tempProductRepository products.ProductRepository,
+) CreateProductUseCase {
 	return CreateProductUseCase{
-		productRepository: productRepository,
+		persistProductRepository: persistProductRepository,
+		tempProductRepository:    tempProductRepository,
 	}
 }
 
@@ -18,5 +25,10 @@ func (s CreateProductUseCase) CreateProduct(sku string) error {
 		return err
 	}
 
-	return s.productRepository.Save(&product)
+	err = s.tempProductRepository.Save(&product)
+	if err != nil {
+		return err
+	}
+
+	return s.persistProductRepository.Save(&product)
 }

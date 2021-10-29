@@ -1,13 +1,9 @@
 package in_memory
 
 import (
-	"errors"
 	products "feeder-service/internal/products/domain"
-	"fmt"
 	"sync"
 )
-
-var ErrProductExists = errors.New("Product already exists")
 
 type productRepository struct {
 	mu  sync.Mutex
@@ -15,22 +11,21 @@ type productRepository struct {
 }
 
 // NewProductRepository init a new in memory product repository.
-func NewProductRepository(set map[products.Product]bool) products.ProductRepository {
+func NewProductRepository() products.ProductRepository {
 	return &productRepository{
-		set: set,
+		set: make(map[products.Product]bool),
 	}
 }
 
 // Save add entry to map of products if not exists yet.
 func (r *productRepository) Save(product *products.Product) error {
 	r.mu.Lock()
+	defer r.mu.Unlock()
 
 	if r.set[*product] {
-		return fmt.Errorf("%w: %v", ErrProductExists, *product)
+		return products.NewErrProductExists(product)
 	}
 	r.set[*product] = true
-
-	r.mu.Unlock()
 
 	return nil
 }

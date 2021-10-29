@@ -11,8 +11,8 @@ type Counter struct {
 	total uint64
 }
 
-// Inc increments the counter for the given key.
-func (c *Counter) Inc(key string) {
+// Inc increments the counter.
+func (c *Counter) Inc() {
 	c.mu.Lock()
 
 	atomic.AddUint64(&c.total, 1)
@@ -21,7 +21,7 @@ func (c *Counter) Inc(key string) {
 }
 
 // Value returns the current value of the counter.
-func (c *Counter) Value(key string) uint64 {
+func (c *Counter) Value() uint64 {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
