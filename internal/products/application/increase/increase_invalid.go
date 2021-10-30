@@ -8,11 +8,9 @@ type IncreaseInvalidProductUseCase struct {
 	counter *counter.Counter
 }
 
-func NewIncreaseInvalidProductUseCase(
-	counter *counter.Counter,
-) IncreaseInvalidProductUseCase {
+func NewIncreaseInvalidProductUseCase() IncreaseInvalidProductUseCase {
 	return IncreaseInvalidProductUseCase{
-		counter: counter,
+		counter: &counter.Counter{},
 	}
 }
 

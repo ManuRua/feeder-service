@@ -1,66 +1,138 @@
 package server
 
 import (
-	"feeder-service/internal/products/infra/server/handler"
+	"context"
+	"errors"
 	"feeder-service/internal/shared/domain/config"
+	"feeder-service/internal/shared/infra/counter"
+	"feeder-service/internal/shared/infra/server/net/handler"
 	"fmt"
 	"log"
 	"net"
+	"os"
+	"os/signal"
 	"strconv"
+	"sync"
+	"time"
 )
 
 type server struct {
-	config  config.ServerConfig
-	handler handler.Handler
+	config   config.ServerConfig
+	listener net.TCPListener
+	wg       sync.WaitGroup
+	handler  handler.Handler
+	limiter  *counter.Counter
 }
 
 type Server interface {
-	Run() error
+	Run(ctx context.Context) error
+	Shutdown()
 }
 
-func New(serverConfig config.ServerConfig, handler handler.Handler) Server {
+// New creates a new server and return it with context
+func New(ctx context.Context, serverConfig config.ServerConfig, handler handler.Handler) (context.Context, Server) {
 	srv := &server{
 		config:  serverConfig,
 		handler: handler,
+		limiter: &counter.Counter{},
 	}
 
-	return srv
+	srv.wg.Add(1)
+
+	return serverContext(ctx, serverConfig.Timeout), srv
 }
 
-func (s *server) Run() error {
+// Run launches the server and accepts connections
+func (s *server) Run(ctx context.Context) error {
+	defer s.wg.Done()
+
 	portStr := strconv.Itoa(s.config.Port)
 
-	l, err := net.Listen(s.config.Network, ":"+portStr)
+	l, err := net.ListenTCP(s.config.Network, &net.TCPAddr{
+		Port: s.config.Port,
+	})
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
-	defer l.Close()
+	s.listener = *l
 
 	log.Println("Server running on port", portStr)
 
-	sem := make(chan int, s.config.ConnLimit)
-	id := 1
-
-	for {
-		c, err := l.Accept()
-		if err != nil {
-			fmt.Println("Error connecting:", err.Error())
-			return err
-		}
-		if id > s.config.ConnLimit {
-			_, err = c.Write([]byte("There are already 5 clients connected."))
+	go func() {
+		for {
+			c, err := l.Accept()
 			if err != nil {
-				fmt.Println("Error writting:", err.Error())
+				fmt.Println("Error connecting:", err)
+				break
 			}
-			c.Close()
-		} else {
-			sem <- id
-
-			fmt.Println("Client " + c.RemoteAddr().String() + " connected")
-			go s.handler.Handle(c, sem, &id)
-
-			id++
+			if !isMaxConnectionsLimit(s, c) {
+				handleConnection(ctx, s, c)
+			}
 		}
+	}()
+
+	<-ctx.Done()
+	return errors.New("Server shutdown by timeout.")
+}
+
+// Shutdown closes listener and wait that the rest of connections were closed
+func (s *server) Shutdown() {
+	fmt.Println("Shutdown")
+	s.listener.Close()
+	s.wg.Wait()
+}
+
+// serverContext prepares context for a graceful shutdown of server after a timeout or SIGINT signal
+func serverContext(ctx context.Context, timeout uint8) context.Context {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeout)*time.Second)
+	go func() {
+		<-c
+		cancel()
+	}()
+
+	return ctx
+}
+
+// isMaxConnectionsLimit checks if maximum number of connections is exceeded
+func isMaxConnectionsLimit(s *server, c net.Conn) bool {
+	if s.limiter.Value() == uint64(s.config.ConnLimit) {
+		_, err := c.Write([]byte("There are already 5 clients connected."))
+		if err != nil {
+			fmt.Println("Error writting:", err.Error())
+		}
+		c.Close()
+		return true
 	}
+	return false
+}
+
+// handleConnection manages all states of a valid connection
+func handleConnection(ctx context.Context, s *server, c net.Conn) {
+	s.wg.Add(1)
+	s.limiter.Inc()
+
+	fmt.Println("Client " + c.RemoteAddr().String() + " connected")
+
+	go func() {
+		ctxCancel, cancel := context.WithCancel(ctx)
+
+		go func() {
+			s.handler.Handle(c)
+			cancel()
+		}()
+
+		<-ctxCancel.Done()
+		closeConn(s, c)
+	}()
+}
+
+// closeConn closes connection leaving a slot to another one
+func closeConn(s *server, c net.Conn) {
+	c.Close()
+	fmt.Println("Client " + c.RemoteAddr().String() + " left.")
+
+	s.limiter.Dec()
+	s.wg.Done()
 }

@@ -8,11 +8,9 @@ type IncreaseDuplicatedProductUseCase struct {
 	counter *counter.Counter
 }
 
-func NewIncreaseDuplicatedProductUseCase(
-	counter *counter.Counter,
-) IncreaseDuplicatedProductUseCase {
+func NewIncreaseDuplicatedProductUseCase() IncreaseDuplicatedProductUseCase {
 	return IncreaseDuplicatedProductUseCase{
-		counter: counter,
+		counter: &counter.Counter{},
 	}
 }
 

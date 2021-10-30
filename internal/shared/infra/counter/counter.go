@@ -20,6 +20,15 @@ func (c *Counter) Inc() {
 	c.mu.Unlock()
 }
 
+// Dec decreases the counter.
+func (c *Counter) Dec() {
+	c.mu.Lock()
+
+	atomic.AddUint64(&c.total, ^uint64(0))
+
+	c.mu.Unlock()
+}
+
 // Value returns the current value of the counter.
 func (c *Counter) Value() uint64 {
 	c.mu.Lock()

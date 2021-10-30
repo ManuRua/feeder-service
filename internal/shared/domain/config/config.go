@@ -11,7 +11,8 @@ type Config struct {
 type ServerConfig struct {
 	Network   string
 	Port      int
-	ConnLimit int
+	ConnLimit uint8
+	Timeout   uint8
 }
 
 // DatabaseConfig exported
