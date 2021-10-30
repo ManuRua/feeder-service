@@ -8,6 +8,7 @@ import (
 	"feeder-service/internal/shared/infra/server/net/handler"
 	"fmt"
 	"net"
+	"syscall"
 )
 
 type createHandler struct {
@@ -35,6 +36,15 @@ func (h *createHandler) Handle(c net.Conn) {
 	if err != nil {
 		fmt.Println(err)
 		return
+	}
+
+	input := str[:len(str)-1]
+	if input == "terminate" {
+		err = syscall.Kill(syscall.Getpid(), syscall.SIGINT)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
 
 	err = h.createProductUseCase.CreateProduct(str[:len(str)-1])
