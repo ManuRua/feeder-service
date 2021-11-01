@@ -11,4 +11,4 @@ COPY . .
 
 RUN go mod download
 
-ENTRYPOINT dlv debug ./cmd --listen=:40000 --headless=true --api-version=2
+ENTRYPOINT dlv debug ./cmd/api --listen=:40000 --headless=true --api-version=2

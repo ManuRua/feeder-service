@@ -9,5 +9,3 @@ services:
       - 4000:4000
     environment:
       - APP_ENV=production
-    # depends_on:
-    #   - db-postgres

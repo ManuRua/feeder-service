@@ -13,21 +13,9 @@ import (
 	server "feeder-service/internal/shared/infra/server/net"
 )
 
-const (
-	network   = "tcp"
-	port      = 4000
-	connLimit = 5
-	timeout   = 10
-)
-
 // Run manages dependency injection and launch server
 func Run() error {
-	serverConfig := config.ServerConfig{
-		Network:   network,
-		Port:      port,
-		ConnLimit: connLimit,
-		Timeout:   timeout,
-	}
+	config := config.LoadConfig()
 
 	persistRepository := fs.NewProductRepository()
 	tempRepository := in_memory.NewProductRepository()
@@ -43,7 +31,7 @@ func Run() error {
 	createHandler := handler.NewCreateHandler(createUC, increaseInvalidUC, increaseDuplicatedUC)
 	reportHandler := handler.NewReportHandler(countUC)
 
-	ctx, srv := server.New(context.Background(), serverConfig, createHandler, reportHandler)
+	ctx, srv := server.New(context.Background(), config.Server, createHandler, reportHandler)
 
 	defer srv.Shutdown()
 	return srv.Run(ctx)
