@@ -2,8 +2,6 @@
 
 This repository contains the code examples used on the technical test for Deporvillage.
 
-[Deporvillage Technical Test - golang.pdf](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/241dc35c-dfc7-4f38-be59-836a35f630a6/Deporvillage_Technical_Test_-_golang.pdf)
-
 This documentation could be accessed in a [Notion page](https://manurua.notion.site/Technical-Test-Deporvillage-885b3520a43b488992dc7ac0bd061e3f).
 
 ## Requirements
@@ -29,8 +27,8 @@ This documentation could be accessed in a [Notion page](https://manurua.notion.s
 ## Assumptions
 
 - Due to these requirements:
-    - The Application must write a de-duplicated list of these numbers to a log file in no particular order.
-    - Your Application may not for any part of its operation use or require the use of external systems, for example Apache Kafka or Redis.
+    - *The Application must write a de-duplicated list of these numbers to a log file in no particular order.*
+    - *Your Application may not for any part of its operation use or require the use of external systems, for example Apache Kafka or Redis.*
 
     I have not implemented a solution with an external database like MySQL or PostgreSQL and persist info with a log file.
 
