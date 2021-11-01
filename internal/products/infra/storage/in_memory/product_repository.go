@@ -17,7 +17,7 @@ func NewProductRepository() products.ProductRepository {
 	}
 }
 
-// Save add entry to map of products if not exists yet.
+// Save adds entry to map of products if not exists yet.
 func (r *productRepository) Save(product *products.Product) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -28,4 +28,12 @@ func (r *productRepository) Save(product *products.Product) error {
 	r.set[*product] = true
 
 	return nil
+}
+
+// Count returns the length of stored products
+func (r *productRepository) Count() int {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	return len(r.set)
 }

@@ -9,16 +9,18 @@ type CreateProductUseCase struct {
 	tempProductRepository    products.ProductRepository
 }
 
+// NewCreateHandler creates a new use case to create a product
 func NewCreateProductUseCase(
 	persistProductRepository products.ProductRepository,
 	tempProductRepository products.ProductRepository,
 ) CreateProductUseCase {
 	return CreateProductUseCase{
-		persistProductRepository: persistProductRepository,
-		tempProductRepository:    tempProductRepository,
+		persistProductRepository,
+		tempProductRepository,
 	}
 }
 
+// CreateProduct creates a valid product and save it properly
 func (s CreateProductUseCase) CreateProduct(sku string) error {
 	product, err := products.NewProduct(sku)
 	if err != nil {

@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"errors"
+	product_handlers "feeder-service/internal/products/infra/server/net/handler"
 	"feeder-service/internal/shared/domain/config"
 	"feeder-service/internal/shared/infra/counter"
 	"feeder-service/internal/shared/infra/server/net/handler"
@@ -17,24 +18,27 @@ import (
 )
 
 type server struct {
-	config   config.ServerConfig
-	listener net.TCPListener
-	wg       sync.WaitGroup
-	handler  handler.Handler
-	limiter  *counter.Counter
+	config        config.ServerConfig
+	listener      net.TCPListener
+	wg            sync.WaitGroup
+	limiter       *counter.Counter
+	handler       handler.Handler
+	reportHandler product_handlers.ReportHandler
 }
 
+// Server is a TCP server that limits connections
 type Server interface {
 	Run(ctx context.Context) error
 	Shutdown()
 }
 
 // New creates a new server and return it with context
-func New(ctx context.Context, serverConfig config.ServerConfig, handler handler.Handler) (context.Context, Server) {
+func New(ctx context.Context, serverConfig config.ServerConfig, handler handler.Handler, reportHandler product_handlers.ReportHandler) (context.Context, Server) {
 	srv := &server{
-		config:  serverConfig,
-		handler: handler,
-		limiter: &counter.Counter{},
+		config:        serverConfig,
+		limiter:       &counter.Counter{},
+		handler:       handler,
+		reportHandler: reportHandler,
 	}
 
 	srv.wg.Add(1)
@@ -80,6 +84,7 @@ func (s *server) Shutdown() {
 	fmt.Println("Shutdown")
 	s.listener.Close()
 	s.wg.Wait()
+	s.reportHandler.Handle()
 }
 
 // serverContext prepares context for a graceful shutdown of server after a timeout or SIGINT signal

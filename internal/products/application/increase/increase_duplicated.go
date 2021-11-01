@@ -8,12 +8,14 @@ type IncreaseDuplicatedProductUseCase struct {
 	counter *counter.Counter
 }
 
-func NewIncreaseDuplicatedProductUseCase() IncreaseDuplicatedProductUseCase {
+// NewIncreaseDuplicatedProductUseCase creates a new use case to increment duplicated products' counter
+func NewIncreaseDuplicatedProductUseCase(counter *counter.Counter) IncreaseDuplicatedProductUseCase {
 	return IncreaseDuplicatedProductUseCase{
-		counter: &counter.Counter{},
+		counter,
 	}
 }
 
+// IncreaseDuplicatedProduct increments in one the count of duplicated products
 func (s IncreaseDuplicatedProductUseCase) IncreaseDuplicatedProduct() {
 	s.counter.Inc()
 }
