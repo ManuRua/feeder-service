@@ -1,4 +1,4 @@
-package create_handler
+package handler
 
 import (
 	"bufio"
@@ -17,20 +17,22 @@ type createHandler struct {
 	increaseDuplicatedProductUseCase increase.IncreaseDuplicatedProductUseCase
 }
 
+// NewCreateHandler creates a new handler to create a product
 func NewCreateHandler(
 	createProductUseCase create.CreateProductUseCase,
 	increaseInvalidProductUseCase increase.IncreaseInvalidProductUseCase,
 	increaseDuplicatedProductUseCase increase.IncreaseDuplicatedProductUseCase,
 ) handler.Handler {
 	handler := &createHandler{
-		createProductUseCase:             createProductUseCase,
-		increaseInvalidProductUseCase:    increaseInvalidProductUseCase,
-		increaseDuplicatedProductUseCase: increaseDuplicatedProductUseCase,
+		createProductUseCase,
+		increaseInvalidProductUseCase,
+		increaseDuplicatedProductUseCase,
 	}
 
 	return handler
 }
 
+// Handle receives string input and manages validity of this
 func (h *createHandler) Handle(c net.Conn) {
 	str, err := bufio.NewReader(c).ReadString('\n')
 	if err != nil {

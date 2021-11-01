@@ -41,3 +41,8 @@ func (r *productRepository) Save(product *products.Product) error {
 
 	return nil
 }
+
+// Count returns the length of stored products
+func (r *productRepository) Count() int {
+	return 0
+}
