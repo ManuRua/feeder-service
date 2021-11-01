@@ -52,7 +52,7 @@ func (s *server) Run(ctx context.Context) error {
 
 	portStr := strconv.Itoa(s.config.Port)
 
-	l, err := net.ListenTCP(s.config.Network, &net.TCPAddr{
+	l, err := net.ListenTCP("tcp", &net.TCPAddr{
 		Port: s.config.Port,
 	})
 	if err != nil {
@@ -76,14 +76,15 @@ func (s *server) Run(ctx context.Context) error {
 	}()
 
 	<-ctx.Done()
-	return errors.New("Server shutdown by timeout.")
+	return errors.New("Server shutdown!")
 }
 
 // Shutdown closes listener and wait that the rest of connections were closed
 func (s *server) Shutdown() {
-	fmt.Println("Shutdown")
 	s.listener.Close()
+
 	s.wg.Wait()
+
 	s.reportHandler.Handle()
 }
 

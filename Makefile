@@ -27,15 +27,11 @@ build:
 
 start:
 	$(info Make: Starting "$(ENV)" environment containers.)
-	@$(ACTION) up -d
+	@$(ACTION) up
 
 start-build:
 	$(info Make: Starting "$(ENV)" environment containers.)
-	@$(ACTION) up --build -d
-
-start-attach:
-	$(info Make: Starting "$(ENV)" environment containers.)
-	@$(ACTION) up
+	@$(ACTION) up --build
 
 stop:
 	$(info Make: Stopping "$(ENV)" environment containers.)

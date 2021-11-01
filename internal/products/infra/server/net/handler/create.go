@@ -45,8 +45,8 @@ func (h *createHandler) Handle(c net.Conn) {
 		err = syscall.Kill(syscall.Getpid(), syscall.SIGINT)
 		if err != nil {
 			fmt.Println(err)
-			return
 		}
+		return
 	}
 
 	err = h.createProductUseCase.CreateProduct(str[:len(str)-1])
