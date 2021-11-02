@@ -160,10 +160,10 @@ export API_PORT=value
 
 ## Tests
 
-To execute all tests, just run:
+To execute all tests with coverage, just run:
 
 ```bash
-go test ./...
+go test -cover ./...
 ```
 
 ### Extra: GoConvey

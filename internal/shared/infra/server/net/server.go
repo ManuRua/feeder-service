@@ -104,7 +104,7 @@ func serverContext(ctx context.Context, timeout uint8) context.Context {
 // isMaxConnectionsLimit checks if maximum number of connections is exceeded
 func isMaxConnectionsLimit(s *server, c net.Conn) bool {
 	if s.limiter.Value() == uint64(s.config.ConnLimit) {
-		_, err := c.Write([]byte("There are already 5 clients connected."))
+		_, err := c.Write([]byte("There are already " + fmt.Sprint(s.config.ConnLimit) + " clients connected."))
 		if err != nil {
 			fmt.Println("Error writting:", err.Error())
 		}
