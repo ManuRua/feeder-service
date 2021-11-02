@@ -1,6 +1,6 @@
 # Deporvillage - Go TCP API - **Feeder Service (product SKU)**
 
-This repository contains the code examples used on the technical test for Deporvillage.
+This repository contains the code for the technical test for Deporvillage.
 
 This documentation could be accessed in a [Notion page](https://manurua.notion.site/Technical-Test-Deporvillage-885b3520a43b488992dc7ac0bd061e3f).
 
@@ -184,7 +184,7 @@ For example, **netcat** utility is used in tests:
 nc 127.0.0.1 4000
 ```
 
-Then, test to write some product SKU and see how the client is disconnect.
+Then, test to write some product SKU and see how the client is disconnected.
 
 - If the input has a valid format and it does not exist before, it will be persisted in the log file into *tmp/products.log*, and will count as unique product.
 - If the input has a valid format but is exists before, it will count as duplicated product.
