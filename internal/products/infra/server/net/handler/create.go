@@ -60,5 +60,14 @@ func (h *createHandler) Handle(c net.Conn) {
 		default:
 			fmt.Println(err)
 		}
+		_, err := c.Write([]byte(err.Error()))
+		if err != nil {
+			fmt.Println("Error writting:", err.Error())
+		}
+	} else {
+		_, err = c.Write([]byte("Product saved correctly."))
+		if err != nil {
+			fmt.Println("Error writting:", err.Error())
+		}
 	}
 }
