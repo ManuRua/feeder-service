@@ -174,6 +174,8 @@ To watch live results of tests in the browser with a very cool UI.
 
 ## Client Provider
 
+### Manual
+
 To experience the client side, any TCP client is valid to connect to service, send data and watch complete workflow.
 
 For example, **netcat** utility is used in tests:
@@ -188,3 +190,13 @@ Then, test to write some product SKU and see how the client is disconnect.
 - If the input has a valid format but is exists before, it will count as duplicated product.
 - If the input has an invalid format, it will count as invalid product.
 - If the input is exactly *terminate*, all clients are disconnected and server is shutting down immediately.
+
+### Auto
+
+In `cmd/client`, I provide a short go program with a TCP client that generates random strings and send it to server, reconnecting all time and repeating the process every 2 seconds.
+
+There is a flag for generating valid product SKUs. Otherwise, inputs will be invalid by default.
+
+```bash
+go run cmd/client/main.go
+```
